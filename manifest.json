@@ -1,11 +1,12 @@
 {
-  "name": "SOAP MONEY Partner Map",
-  "short_name": "SOAP MAP",
-  "description": "Participating laundromat finder for SOAP MONEY.",
+  "name": "SOAP MONEY Map + Tracker",
+  "short_name": "SOAP MONEY",
+  "description": "Find SOAP MONEY partner laundromats and track drop offs and deliveries.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "assets/icon-192.png",

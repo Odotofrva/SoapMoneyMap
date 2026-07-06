@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#050505" />
-  <title>SOAP MONEY Partner Map</title>
-  <meta name="description" content="Find participating laundromats for SOAP MONEY drops, pickups, partner events, and community access." />
+  <title>SOAP MONEY Partner Map + Drop Tracker</title>
+  <meta name="description" content="Find participating SOAP MONEY laundromats, log in, and track drop offs, pickups, wash progress, and deliveries." />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://unpkg.com" />
@@ -15,42 +15,61 @@
 </head>
 <body>
   <div class="app-shell">
-    <header class="topbar" aria-label="SOAP MONEY map header">
-      <a href="#" class="brand" aria-label="SOAP MONEY home">
+    <header class="topbar" aria-label="SOAP MONEY app header">
+      <a href="#home" class="brand" aria-label="SOAP MONEY home">
         <span class="brand-mark"><img src="assets/soap-money-sm.png" alt="SOAP MONEY SM logo" /></span>
         <span class="brand-copy">
           <img src="assets/soap-money-wordmark.png" alt="SOAP MONEY" />
-          <small>Partner Laundromat Map</small>
+          <small>Wash Network + Drop Tracker</small>
         </span>
       </a>
 
-      <nav class="desktop-nav" aria-label="Map navigation">
+      <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#partners">Partners</a>
         <a href="#mapPanel">Map</a>
+        <a href="#tracker">Tracker</a>
         <a href="#join">Join</a>
       </nav>
 
-      <button class="ghost-btn" id="shareBtn" type="button" aria-label="Share map page">
-        <span>Share</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.22.09-.45.09-.7s-.04-.48-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .25.04.48.09.7L8.04 9.81A3 3 0 1 0 8.04 14.2l7.12 4.18c-.05.2-.08.41-.08.62a2.92 2.92 0 1 0 2.92-2.9Z"/></svg>
-      </button>
+      <div class="top-actions">
+        <button class="ghost-btn account-pill" id="accountTopBtn" type="button" aria-label="Open account tracker">
+          <span id="accountTopText">Log in</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z"/></svg>
+        </button>
+        <button class="ghost-btn share-btn" id="shareBtn" type="button" aria-label="Share page">
+          <span>Share</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.22.09-.45.09-.7s-.04-.48-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .25.04.48.09.7L8.04 9.81A3 3 0 1 0 8.04 14.2l7.12 4.18c-.05.2-.08.41-.08.62a2.92 2.92 0 1 0 2.92-2.9Z"/></svg>
+        </button>
+      </div>
     </header>
 
-    <main>
+    <main id="home">
       <section class="hero-card" aria-labelledby="pageTitle">
         <div class="hero-content">
           <span class="eyebrow">SOAP MONEY network</span>
-          <h1 id="pageTitle">Find every participating laundromat in the SOAP MONEY lane.</h1>
-          <p>Use the map to locate partner spots for drops, pickups, events, merch access, and future SOAP MONEY activations.</p>
+          <h1 id="pageTitle">Find partner laundromats and track every drop from wash to delivery.</h1>
+          <p>Customers can log in, create a drop off, get a tracking code, and follow the progress from accepted, washing, quality check, out for delivery, and delivered.</p>
           <div class="hero-actions">
             <button class="primary-btn" id="locateBtn" type="button">Use my location</button>
-            <a class="secondary-btn" href="#partners">View spots</a>
+            <a class="secondary-btn" href="#tracker">Track my order</a>
           </div>
         </div>
         <div class="hero-badge" aria-hidden="true">
           <img src="assets/soap-money-sm.png" alt="" />
-          <span>Live partner map</span>
+          <span>Live drop tracker</span>
         </div>
+      </section>
+
+      <section class="quick-track-card" aria-label="Quick tracking lookup">
+        <div>
+          <span class="eyebrow">Quick lookup</span>
+          <h2>Already have a tracking code?</h2>
+        </div>
+        <form class="quick-track-form" id="quickTrackForm">
+          <label for="quickTrackInput" class="visually-hidden">Tracking code</label>
+          <input id="quickTrackInput" type="text" placeholder="Example SM-48291" autocomplete="off" />
+          <button class="primary-btn" type="submit">Track</button>
+        </form>
       </section>
 
       <section class="utility-panel" aria-label="Search and filters">
@@ -62,6 +81,7 @@
           <button class="chip active" data-filter="all" type="button">All</button>
           <button class="chip" data-filter="drop" type="button">Drop off</button>
           <button class="chip" data-filter="pickup" type="button">Pickup</button>
+          <button class="chip" data-filter="delivery" type="button">Delivery</button>
           <button class="chip" data-filter="merch" type="button">Merch</button>
           <button class="chip" data-filter="event" type="button">Events</button>
         </div>
@@ -89,11 +109,131 @@
         </section>
       </section>
 
+      <section class="tracker-section" id="tracker" aria-labelledby="trackerTitle">
+        <div class="tracker-grid">
+          <div class="auth-card" id="authCard">
+            <div class="panel-heading compact-heading">
+              <div>
+                <span class="eyebrow">Customer account</span>
+                <h2 id="trackerTitle">Log in to track your wash.</h2>
+              </div>
+              <img src="assets/soap-money-sm.png" alt="" />
+            </div>
+
+            <div class="session-card hidden" id="sessionCard">
+              <div>
+                <span class="eyebrow">Signed in</span>
+                <h3 id="customerName">Customer</h3>
+                <p id="customerContact">Tracking account active</p>
+              </div>
+              <button class="secondary-btn danger-soft" id="logoutBtn" type="button">Log out</button>
+            </div>
+
+            <div class="login-prompt-card" id="loginPromptCard">
+              <div>
+                <span class="eyebrow">Secure customer access</span>
+                <h3>Open your SOAP MONEY tracker.</h3>
+                <p>Log in from a clean app style popup to view your saved drop offs, deliveries, and tracking codes.</p>
+              </div>
+              <button class="primary-btn full-btn" id="openLoginModalBtn" type="button">Customer login</button>
+            </div>
+          </div>
+
+          <div class="dashboard-card locked" id="dashboardCard">
+            <div class="locked-overlay" id="lockedOverlay">
+              <img src="assets/soap-money-sm.png" alt="" />
+              <h3>Log in to unlock tracking.</h3>
+              <p>Once a customer is signed in, this becomes their drop off and delivery command center.</p>
+              <button class="primary-btn" id="unlockLoginBtn" type="button">Log in now</button>
+            </div>
+
+            <div class="panel-heading compact-heading">
+              <div>
+                <span class="eyebrow">My drops</span>
+                <h2>Track drop offs and deliveries</h2>
+              </div>
+              <span class="count-pill" id="orderCount">0 orders</span>
+            </div>
+
+            <div class="stats-row" aria-label="Order statistics">
+              <div class="stat-tile">
+                <strong id="activeCount">0</strong>
+                <span>Active</span>
+              </div>
+              <div class="stat-tile">
+                <strong id="deliveryCount">0</strong>
+                <span>Out now</span>
+              </div>
+              <div class="stat-tile">
+                <strong id="deliveredCount">0</strong>
+                <span>Delivered</span>
+              </div>
+            </div>
+
+            <form class="drop-form" id="dropForm">
+              <div class="form-row two-col">
+                <label>
+                  <span>Drop off laundromat</span>
+                  <select id="dropPartner" required></select>
+                </label>
+                <label>
+                  <span>Service type</span>
+                  <select id="dropService" required>
+                    <option value="Wash + Fold">Wash + Fold</option>
+                    <option value="Drop Off Only">Drop Off Only</option>
+                    <option value="Pickup + Delivery">Pickup + Delivery</option>
+                    <option value="SOAP MONEY Capsule Pickup">SOAP MONEY Capsule Pickup</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="form-row two-col">
+                <label>
+                  <span>Bag count</span>
+                  <input id="dropBags" type="number" min="1" max="20" value="1" required />
+                </label>
+                <label>
+                  <span>Delivery window</span>
+                  <select id="deliveryWindow" required>
+                    <option value="ASAP">ASAP</option>
+                    <option value="Today Evening">Today Evening</option>
+                    <option value="Tomorrow Morning">Tomorrow Morning</option>
+                    <option value="Tomorrow Evening">Tomorrow Evening</option>
+                    <option value="Pickup at laundromat">Pickup at laundromat</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>
+                <span>Delivery address or pickup note</span>
+                <input id="deliveryAddress" type="text" placeholder="Building, cross streets, or pickup details" required />
+              </label>
+
+              <label>
+                <span>Special notes</span>
+                <textarea id="dropNotes" rows="3" placeholder="Detergent preference, no heat, call on arrival, etc."></textarea>
+              </label>
+
+              <button class="primary-btn full-btn" type="submit">Create drop off</button>
+            </form>
+
+            <div class="orders-header">
+              <div>
+                <span class="eyebrow">Live statuses</span>
+                <h3>Order timeline</h3>
+              </div>
+              <button class="secondary-btn small-btn" id="seedOrderBtn" type="button">Add sample</button>
+            </div>
+            <div class="orders-list" id="ordersList"></div>
+          </div>
+        </div>
+      </section>
+
       <section class="join-card" id="join" aria-labelledby="joinTitle">
         <div>
           <span class="eyebrow">Become a partner</span>
           <h2 id="joinTitle">Put your laundromat on the SOAP MONEY map.</h2>
-          <p>Use this section for partner onboarding, event requests, drop off access, and future brand activations.</p>
+          <p>Add your shop as a partner location and let customers track their drop offs, pickups, and deliveries with SOAP MONEY.</p>
         </div>
         <a class="primary-btn" href="mailto:odot.rva@proton.me?subject=SOAP%20MONEY%20Laundromat%20Partner%20Request">Request partner access</a>
       </section>
@@ -105,8 +245,12 @@
         <span>Spots</span>
       </a>
       <a href="#mapPanel" class="bottom-nav-item">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0 7-13Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>
         <span>Map</span>
+      </a>
+      <a href="#tracker" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V5a2 2 0 0 1 2-2Zm3 5h8V6H8v2Zm0 4h8v-2H8v2Zm0 4h5v-2H8v2Z"/></svg>
+        <span>Track</span>
       </a>
       <a href="#join" class="bottom-nav-item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 6.4v6.7c0 5 3.8 7.9 9 8.9 5.2-1 9-3.9 9-8.9V6.4L12 2Zm1 13h-2v-2H9v-2h2V9h2v2h2v2h-2v2Z"/></svg>
@@ -133,6 +277,66 @@
       </div>
     </article>
   </template>
+
+  <template id="orderCardTemplate">
+    <article class="order-card">
+      <div class="order-main">
+        <div>
+          <span class="tracking-code"></span>
+          <h3></h3>
+          <p class="order-meta"></p>
+        </div>
+        <span class="order-status"></span>
+      </div>
+      <div class="progress-track"></div>
+      <div class="order-details"></div>
+      <div class="order-actions">
+        <button class="mini-link advance-order" type="button">Advance status</button>
+        <button class="mini-link delivered-order" type="button">Mark delivered</button>
+      </div>
+    </article>
+  </template>
+
+
+  <div class="modal-backdrop hidden" id="loginModal" aria-hidden="true">
+    <div class="login-modal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle" tabindex="-1">
+      <button class="modal-close" id="closeLoginModal" type="button" aria-label="Close login popup">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3 1.4 1.4Z"/></svg>
+      </button>
+      <div class="modal-hero">
+        <img src="assets/soap-money-sm.png" alt="" />
+        <div>
+          <span class="eyebrow">SOAP MONEY account</span>
+          <h2 id="loginModalTitle">Log in to track your drop off.</h2>
+          <p>Enter your name, contact, and 4 digit passcode to open the customer dashboard.</p>
+        </div>
+      </div>
+
+      <form class="auth-form" id="loginForm">
+        <div class="form-row two-col">
+          <label>
+            <span>Name</span>
+            <input id="loginName" type="text" placeholder="Your name" autocomplete="name" required />
+          </label>
+          <label>
+            <span>Phone or email</span>
+            <input id="loginContact" type="text" placeholder="Phone or email" autocomplete="email" required />
+          </label>
+        </div>
+        <label>
+          <span>4 digit passcode</span>
+          <input id="loginPin" type="password" inputmode="numeric" minlength="4" maxlength="4" placeholder="Create or enter PIN" autocomplete="one-time-code" required />
+        </label>
+        <div class="form-actions">
+          <button class="primary-btn" type="submit">Continue</button>
+          <button class="secondary-btn" id="demoLoginBtn" type="button">Use demo account</button>
+        </div>
+        <p class="fine-print">This front end saves demo account data in the browser. Connect Firebase, Supabase, Shopify customer accounts, or your own backend before using real customer data.</p>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="app.js"></script>
