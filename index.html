@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>SOAP MONEY Partner Map</title>
+  <meta name="description" content="Find participating laundromats for SOAP MONEY drops, pickups, partner events, and community access." />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="preconnect" href="https://tile.openstreetmap.org" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ0kD7fVprn7tBdfw7uZQwVgRcLr5c=" crossorigin="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar" aria-label="SOAP MONEY map header">
+      <a href="#" class="brand" aria-label="SOAP MONEY home">
+        <span class="brand-mark"><img src="assets/soap-money-sm.png" alt="SOAP MONEY SM logo" /></span>
+        <span class="brand-copy">
+          <img src="assets/soap-money-wordmark.png" alt="SOAP MONEY" />
+          <small>Partner Laundromat Map</small>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Map navigation">
+        <a href="#partners">Partners</a>
+        <a href="#mapPanel">Map</a>
+        <a href="#join">Join</a>
+      </nav>
+
+      <button class="ghost-btn" id="shareBtn" type="button" aria-label="Share map page">
+        <span>Share</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.1c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.22.09-.45.09-.7s-.04-.48-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .25.04.48.09.7L8.04 9.81A3 3 0 1 0 8.04 14.2l7.12 4.18c-.05.2-.08.41-.08.62a2.92 2.92 0 1 0 2.92-2.9Z"/></svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero-card" aria-labelledby="pageTitle">
+        <div class="hero-content">
+          <span class="eyebrow">SOAP MONEY network</span>
+          <h1 id="pageTitle">Find every participating laundromat in the SOAP MONEY lane.</h1>
+          <p>Use the map to locate partner spots for drops, pickups, events, merch access, and future SOAP MONEY activations.</p>
+          <div class="hero-actions">
+            <button class="primary-btn" id="locateBtn" type="button">Use my location</button>
+            <a class="secondary-btn" href="#partners">View spots</a>
+          </div>
+        </div>
+        <div class="hero-badge" aria-hidden="true">
+          <img src="assets/soap-money-sm.png" alt="" />
+          <span>Live partner map</span>
+        </div>
+      </section>
+
+      <section class="utility-panel" aria-label="Search and filters">
+        <label class="search-box" for="searchInput">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 20.3-5.2-5.2a7.4 7.4 0 1 0-.7.7l5.2 5.2.7-.7ZM4 10.2a6.2 6.2 0 1 1 12.4 0 6.2 6.2 0 0 1-12.4 0Z"/></svg>
+          <input id="searchInput" type="search" placeholder="Search city, borough, service, or partner" autocomplete="off" />
+        </label>
+        <div class="filter-row" role="list" aria-label="Partner filters">
+          <button class="chip active" data-filter="all" type="button">All</button>
+          <button class="chip" data-filter="drop" type="button">Drop off</button>
+          <button class="chip" data-filter="pickup" type="button">Pickup</button>
+          <button class="chip" data-filter="merch" type="button">Merch</button>
+          <button class="chip" data-filter="event" type="button">Events</button>
+        </div>
+      </section>
+
+      <section class="map-layout" aria-label="SOAP MONEY laundromat finder">
+        <aside class="partners-panel" id="partners" aria-label="Participating laundromats">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">Participating spots</span>
+              <h2>Laundromats</h2>
+            </div>
+            <span class="count-pill" id="resultCount">0 spots</span>
+          </div>
+          <div class="partner-list" id="partnerList"></div>
+        </aside>
+
+        <section class="map-panel" id="mapPanel" aria-label="Interactive map">
+          <div class="map-status" id="mapStatus">Map loading</div>
+          <div id="map" role="application" aria-label="SOAP MONEY participating laundromat map"></div>
+          <div class="map-controls">
+            <button class="map-control" id="resetMapBtn" type="button">Reset map</button>
+            <button class="map-control" id="openSelectedBtn" type="button">Directions</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="join-card" id="join" aria-labelledby="joinTitle">
+        <div>
+          <span class="eyebrow">Become a partner</span>
+          <h2 id="joinTitle">Put your laundromat on the SOAP MONEY map.</h2>
+          <p>Use this section for partner onboarding, event requests, drop off access, and future brand activations.</p>
+        </div>
+        <a class="primary-btn" href="mailto:odot.rva@proton.me?subject=SOAP%20MONEY%20Laundromat%20Partner%20Request">Request partner access</a>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Mobile app navigation">
+      <a href="#partners" class="bottom-nav-item active">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.8A2.8 2.8 0 0 1 6.8 3h10.4A2.8 2.8 0 0 1 20 5.8v13.4a1.8 1.8 0 0 1-2.8 1.5L12 17.2l-5.2 3.5A1.8 1.8 0 0 1 4 19.2V5.8Z"/></svg>
+        <span>Spots</span>
+      </a>
+      <a href="#mapPanel" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>
+        <span>Map</span>
+      </a>
+      <a href="#join" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 6.4v6.7c0 5 3.8 7.9 9 8.9 5.2-1 9-3.9 9-8.9V6.4L12 2Zm1 13h-2v-2H9v-2h2V9h2v2h2v2h-2v2Z"/></svg>
+        <span>Join</span>
+      </a>
+    </nav>
+  </div>
+
+  <template id="partnerCardTemplate">
+    <article class="partner-card">
+      <div class="partner-card-body" role="button" tabindex="0">
+        <div class="card-topline">
+          <span class="status-dot"></span>
+          <span class="status-text"></span>
+          <span class="distance-text"></span>
+        </div>
+        <h3></h3>
+        <p class="address"></p>
+        <div class="tags"></div>
+        <div class="card-actions">
+          <button class="mini-link view-link" type="button">View on map</button>
+          <a class="mini-link directions-link" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>
